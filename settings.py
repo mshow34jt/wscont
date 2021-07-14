@@ -55,6 +55,7 @@ INSTALLED_APPS = (
     'objbrowser',
     'sos_db',
     'sosdb_auth',
+    'grafana',
 )
 
 try:

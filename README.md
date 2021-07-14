@@ -9,5 +9,7 @@ Run container:
 docker run -d -v ~jenos/work/sosdata:/data/sos -v ~jenos/work/wslogs:/var/log/ovis_web_svcs \
 -v /etc/localtime:/etc/localtime -p 8088:8080/tcp --name webservices ogcws:v1
 
-Recommended to map out data and log targets, change in supplied configs if modifying.
+Recommended adjustments:
+Run: Mapped folder locations.
+settings.py: admin password
 
