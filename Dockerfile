@@ -99,6 +99,8 @@ RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36
     touch /var/log/ovis_web_svcs/settings.log /var/log/ovis_web_svcs/sosgui.log && \
     chown :apache /var/log/ovis_web_svcs/settings.log /var/log/ovis_web_svcs/sosgui.log && \
     chmod g+w /var/log/ovis_web_svcs/settings.log /var/log/ovis_web_svcs/sosgui.log && \
+    rm -f /etc/httpd/logs && \
+    ln -s /var/log/ovis_web_svcs /etc/httpd/logs && \
 #    cp -r templates static /var/www/ovis_web_svcs && \
     python3 manage.py migrate && \
     python3 manage.py migrate --run-syncdb && \

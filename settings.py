@@ -31,6 +31,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 	'www.opengridcomputing.com',
         '192.168.2.218',
+        '141.142.148.77',
 ]
 
 APPEND_SLASH = False
