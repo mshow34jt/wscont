@@ -96,6 +96,7 @@ RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36
     python3 manage.py collectstatic && \
     chown -R apache:apache /var/www/ovis_web_svcs && \
     chmod -R g+rw /var/www/ovis_web_svcs && \
+    rm -f /etc/localtime && \
     echo "for file in /var/log/ovis_web_svcs/settings.log /var/log/ovis_web_svcs/sosgui.log ; do" >> /usr/local/bin/init.sh && \
     echo "  if [ ! -f \$file ]; then" >> /usr/local/bin/init.sh && \
     echo "    touch \$file" >> /usr/local/bin/init.sh && \
