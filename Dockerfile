@@ -88,15 +88,15 @@ RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36
           /usr/lib64/httpd/modules/mod_wsgi.so && \
     echo "LoadModule wsgi_module modules/mod_wsgi.so" > /etc/httpd/conf.modules.d/10-wsgi.conf && \
     mkdir -p /var/log/ovis_web_svcs /data/sos && \
-    chown -R :apache /var/www/ovis_web_svcs && \
-    chmod -R g+rw /var/www/ovis_web_svcs && \
     rm -f /etc/httpd/logs && \
     ln -s /var/log/ovis_web_svcs /etc/httpd/logs && \
     python3 manage.py migrate && \
     python3 manage.py migrate --run-syncdb && \
     echo "from sosdb_auth.models import SosdbUser; SosdbUser.objects.create_superuser('admin', 'admin@example.com', 'pass')" | python3 manage.py shell && \
     python3 manage.py collectstatic && \
-    echo "for file in settings.log sosgui.log ; do" >> /usr/local/bin/init.sh && \
+    chown -R apache:apache /var/www/ovis_web_svcs && \
+    chmod -R g+rw /var/www/ovis_web_svcs && \
+    echo "for file in /var/log/ovis_web_svcs/settings.log /var/log/ovis_web_svcs/sosgui.log ; do" >> /usr/local/bin/init.sh && \
     echo "  if [ ! -f \$file ]; then" >> /usr/local/bin/init.sh && \
     echo "    touch \$file" >> /usr/local/bin/init.sh && \
     echo "    chown :apache \$file" >> /usr/local/bin/init.sh && \

@@ -29,6 +29,7 @@ DEBUG = True
 # List Grafana IP here
 ALLOWED_HOSTS = [
     '127.0.0.1',
+    'localhost',
 	'www.opengridcomputing.com',
         '192.168.2.218',
         '141.142.148.77',
@@ -156,7 +157,7 @@ STATICFILES_DIRS = [
 ]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SOS_ROOT = "/data/sos"
+SOS_ROOT = "/data/"
 LOG_FILE = "/var/log/ovis_web_svcs/sosgui.log"
 LOG_DATE_FMT = "%F %T"
 ODS_LOG_FILE = "/var/log/ovis_web_svcs/ods.log"
