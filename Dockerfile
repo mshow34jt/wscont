@@ -76,7 +76,7 @@ COPY --from=build /usr/local/sos /usr/local/sos
 COPY --from=build /var/www/ovis_web_svcs /var/www/ovis_web_svcs
 COPY --from=build /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36.cpython-36m-x86_64-linux-gnu.so \
                   /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36.cpython-36m-x86_64-linux-gnu.so
-COPY wsgi-httpd.conf /etc/httpd/conf.d/wsgi.conf
+COPY httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf
 COPY settings.py /var/www/ovis_web_svcs/sosgui/
 
 ENV LD_LIBRARY_PATH=/usr/local/lib
@@ -87,7 +87,10 @@ WORKDIR /var/www/ovis_web_svcs
 RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36.cpython-36m-x86_64-linux-gnu.so \
           /usr/lib64/httpd/modules/mod_wsgi.so && \
     echo "LoadModule wsgi_module modules/mod_wsgi.so" > /etc/httpd/conf.modules.d/10-wsgi.conf && \
-    mkdir -p /var/log/ovis_web_svcs /data/sos && \
+    # Create convenience config folder for mapping
+    mkdir -p /var/log/ovis_web_svcs /data/sos /config && \
+    # Create convenience log link for mapping
+    ln -s /var/log/ovis_web_svcs /log && \
     rm -f /etc/httpd/logs && \
     ln -s /var/log/ovis_web_svcs /etc/httpd/logs && \
     python3 manage.py migrate && \
@@ -104,6 +107,14 @@ RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36
     echo "    chmod g+rw \$file" >> /usr/local/bin/init.sh && \
     echo "  fi" >> /usr/local/bin/init.sh && \
     echo "done" >> /usr/local/bin/init.sh && \
+    echo "if [ ! -f /config/httpd-wsgi.conf ]; then" >> /usr/local/bin/init.sh && \
+    echo "  mv /etc/httpd/conf.d/wsgi.conf /config/httpd-wsgi.conf" >> /usr/local/bin/init.sh && \
+    echo "  ln -s /config/httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf" >> /usr/local/bin/init.sh && \
+    echo "fi" >> /usr/local/bin/init.sh && \
+    echo "if [ ! -f /config/db.sqlite3 ]; then" >> /usr/local/bin/init.sh && \
+    echo "  mv /var/www/ovis_web_svcs/db.sqlite3 /config/" >> /usr/local/bin/init.sh && \
+    echo "  ln -s /config/db.sqlite3 /var/www/ovis_web_svcs/db.sqlite3" >> /usr/local/bin/init.sh && \
+    echo "fi" >> /usr/local/bin/init.sh && \
     echo "/usr/sbin/httpd -D FOREGROUND" >> /usr/local/bin/init.sh && \
     chmod +x /usr/local/bin/init.sh
 
