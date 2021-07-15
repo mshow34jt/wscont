@@ -15,8 +15,9 @@ docker run -d \
 
 Notes to implement.
 
-Build containter recommended adjustments:
-settings.py file: admin password, TIMEZONE
+Build container recommended adjustments:
+Dockerfile file: admin/pass user info
+settings.py file: TIMEZONE
 wsgi-httpd.conf file: Port number for web.
 
 Run container recommended adjustments:
