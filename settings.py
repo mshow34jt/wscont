@@ -157,6 +157,8 @@ STATICFILES_DIRS = [
 ]
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SOS_ROOT directory expects to see "sos" subdir as content.
+# e.g. If .OBJ and .PG data files are in "/data/sos", then SOS_ROOT should be "/data"
 SOS_ROOT = "/data/"
 LOG_FILE = "/var/log/ovis_web_svcs/sosgui.log"
 LOG_DATE_FMT = "%F %T"

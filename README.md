@@ -6,10 +6,20 @@ Build container:
 docker build -t ogcws:v1 .
 
 Run container:
-docker run -d -v ~jenos/work/sosdata:/data/sos -v ~jenos/work/wslogs:/var/log/ovis_web_svcs \
--v /etc/localtime:/etc/localtime -p 8088:8080/tcp --name webservices ogcws:v1
+docker run -d \
+        -v ~jenos/work/sosdata:/data/sos \
+        -v ~jenos/work/wslogs:/var/log/ovis_web_svcs \
+	-v /etc/localtime:/etc/localtime \
+	-p 8088:8080/tcp --name webservices ogcws:v1
 
-Recommended adjustments:
-Run: Mapped folder locations.
-settings.py: admin password
+
+Notes to implement.
+
+Build containter recommended adjustments:
+settings.py file: admin password, TIMEZONE
+wsgi-httpd.conf file: Port number for web.
+
+Run container recommended adjustments:
+Mapped folder locations.
+Port numbers for web (above) and host listening port.
 
