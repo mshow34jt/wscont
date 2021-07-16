@@ -18,7 +18,7 @@ Notes to implement.
 
 Build container optional adjustments (can be changed after container started):
 Dockerfile file: admin/pass user info
-wsgi-httpd.conf file: Port number for web.
+httpd-wsgi.conf file: Port number for web.
 
 Run container recommended adjustments:
 Mapped folder locations. Please map config, data, log, localtime similar to above.
