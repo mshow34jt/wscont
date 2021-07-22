@@ -76,9 +76,9 @@ COPY --from=build /usr/local/sos /usr/local/sos
 COPY --from=build /var/www/ovis_web_svcs /var/www/ovis_web_svcs
 COPY --from=build /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36.cpython-36m-x86_64-linux-gnu.so \
                   /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36.cpython-36m-x86_64-linux-gnu.so
-COPY httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf
-COPY settings.py /var/www/ovis_web_svcs/sosgui/
-
+#COPY httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf
+#COPY settings.py /var/www/ovis_web_svcs/sosgui/
+ADD custom /custom
 ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV PATH=/usr/local/sos/bin:$PATH
 ENV PYTHONPATH=/usr/local/sos/lib/python3.6/site-packages
@@ -93,30 +93,14 @@ RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36
     ln -s /var/log/ovis_web_svcs /log && \
     rm -f /etc/httpd/logs && \
     ln -s /var/log/ovis_web_svcs /etc/httpd/logs && \
-    python3 manage.py migrate && \
-    python3 manage.py migrate --run-syncdb && \
-    echo "from sosdb_auth.models import SosdbUser; SosdbUser.objects.create_superuser('admin', 'admin@example.com', 'pass')" | python3 manage.py shell && \
-    python3 manage.py collectstatic && \
+#    python3 manage.py migrate && \
+#    python3 manage.py migrate --run-syncdb && \
+#    echo "from sosdb_auth.models import SosdbUser; SosdbUser.objects.create_superuser('admin', 'admin@example.com', 'pass')" | python3 manage.py shell && \
+#    python3 manage.py collectstatic && \
     chown -R apache:apache /var/www/ovis_web_svcs && \
     chmod -R g+rw /var/www/ovis_web_svcs && \
     rm -f /etc/localtime && \
-    echo "for file in /var/log/ovis_web_svcs/settings.log /var/log/ovis_web_svcs/sosgui.log ; do" >> /usr/local/bin/init.sh && \
-    echo "  if [ ! -f \$file ]; then" >> /usr/local/bin/init.sh && \
-    echo "    touch \$file" >> /usr/local/bin/init.sh && \
-    echo "    chown :apache \$file" >> /usr/local/bin/init.sh && \
-    echo "    chmod g+rw \$file" >> /usr/local/bin/init.sh && \
-    echo "  fi" >> /usr/local/bin/init.sh && \
-    echo "done" >> /usr/local/bin/init.sh && \
-    echo "if [ ! -f /config/httpd-wsgi.conf ]; then" >> /usr/local/bin/init.sh && \
-    echo "  mv /etc/httpd/conf.d/wsgi.conf /config/httpd-wsgi.conf" >> /usr/local/bin/init.sh && \
-    echo "  ln -s /config/httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf" >> /usr/local/bin/init.sh && \
-    echo "fi" >> /usr/local/bin/init.sh && \
-    echo "if [ ! -f /config/db.sqlite3 ]; then" >> /usr/local/bin/init.sh && \
-    echo "  mv /var/www/ovis_web_svcs/db.sqlite3 /config/" >> /usr/local/bin/init.sh && \
-    echo "  ln -s /config/db.sqlite3 /var/www/ovis_web_svcs/db.sqlite3" >> /usr/local/bin/init.sh && \
-    echo "fi" >> /usr/local/bin/init.sh && \
-    echo "/usr/sbin/httpd -D FOREGROUND" >> /usr/local/bin/init.sh && \
-    chmod +x /usr/local/bin/init.sh
+    chmod +x /custom/init.sh
 
-CMD ["/bin/bash", "-c", "/usr/local/bin/init.sh"]
+CMD ["/bin/bash", "-c", "/custom/init.sh"]
 

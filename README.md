@@ -10,7 +10,7 @@ docker build -t ogcws:v1 .
 
 docker run -d \
         -v ~jenos/webservices/config:/config \
-        -v ~jenos/webservices/data:/data/sos \
+        -v ~jenos/webservices/data/sos:/data/sos \
         -v ~jenos/webservices/log:/log \
 	-v /etc/localtime:/etc/localtime \
 	-p 8088:8080/tcp --name webservices ogcws:v1
