@@ -13,19 +13,24 @@ docker run -d \
         -v ~jenos/webservices/data/sos:/data/sos \
         -v ~jenos/webservices/log:/log \
 	-v /etc/localtime:/etc/localtime \
+	-e apacheUID=$UID \
+	-e apacheGID=$GID \
 	-p 8088:8080/tcp --name webservices ogcws:v1
 
 
 ## Notes to implement.
 
 ### Build container _optional_ adjustments (can be changed after container started):
-* Dockerfile file: admin/pass user info
-* httpd-wsgi.conf file: Port number for web.
+* custom/init.sh: admin/pass user info
+* httpd-wsgi.conf file: Port number for web. (can be changed later as well)
 
 ### Run container recommended adjustments:
 * Mapped folder locations. Please map config, data, log, localtime similar to above.
 * Mapped port numbers for container httpd to host listening port.
+* apacheUID and apacheGID environments are optional but recommended to avoid permissions issues on the mapped folders owned by an external user.
 
 ### After container started:
-* Adjust  /config/httpd-wsgi.conf file as needed.  (e.g. if mapped port was changed above)
 * Recommend changing default admin password via web browser to port.
+* /config/settings.py has an ALLOWED_HOSTS section that may need the IP or hostname of the grafana host/container added.
+* /config/httpd-wsgi.conf: Port number for web. (if change desired from container build setting above)
+
