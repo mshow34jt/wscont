@@ -76,8 +76,6 @@ COPY --from=build /usr/local/sos /usr/local/sos
 COPY --from=build /var/www/ovis_web_svcs /var/www/ovis_web_svcs
 COPY --from=build /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36.cpython-36m-x86_64-linux-gnu.so \
                   /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36.cpython-36m-x86_64-linux-gnu.so
-#COPY httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf
-#COPY settings.py /var/www/ovis_web_svcs/sosgui/
 ADD custom /custom
 ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV PATH=/usr/local/sos/bin:$PATH
@@ -93,10 +91,6 @@ RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36
     ln -s /var/log/ovis_web_svcs /log && \
     rm -f /etc/httpd/logs && \
     ln -s /var/log/ovis_web_svcs /etc/httpd/logs && \
-#    python3 manage.py migrate && \
-#    python3 manage.py migrate --run-syncdb && \
-#    echo "from sosdb_auth.models import SosdbUser; SosdbUser.objects.create_superuser('admin', 'admin@example.com', 'pass')" | python3 manage.py shell && \
-#    python3 manage.py collectstatic && \
     chown -R apache:apache /var/www/ovis_web_svcs && \
     chmod -R g+rw /var/www/ovis_web_svcs && \
     rm -f /etc/localtime && \
