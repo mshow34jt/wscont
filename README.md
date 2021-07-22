@@ -13,8 +13,8 @@ docker run -d \
         -v ~jenos/webservices/data/sos:/data/sos \
         -v ~jenos/webservices/log:/log \
 	-v /etc/localtime:/etc/localtime \
-	-e apacheUID=$UID \
-	-e apacheGID=$GID \
+	-e apacheUID=`id -u` \
+	-e apacheGID=`id -g` \
 	-p 8088:8080/tcp --name webservices ogcws:v1
 
 
