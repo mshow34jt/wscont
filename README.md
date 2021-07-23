@@ -27,7 +27,7 @@ docker run -d \
 ### Run container recommended adjustments:
 * Mapped folder locations. Please map config, data, log, localtime similar to above.
 * Mapped port numbers for container httpd to host listening port.
-* apacheUID and apacheGID environments are optional but recommended to avoid permissions issues on the mapped folders owned by an external user.
+* apacheUID and apacheGID environments are optional but recommended to avoid permissions issues on the mapped folders owned by an external user. Note, these are intended to be set to the user running the container and will become "apache" within the container context.
 
 ### After container started:
 * Recommend changing default admin password via web browser to port.
