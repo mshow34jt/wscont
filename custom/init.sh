@@ -2,12 +2,14 @@ set -x
 export LD_LIBRARY_PATH=/usr/local/lib
 export PATH=/usr/local/sos/bin:$PATH
 export PYTHONPATH=/usr/local/sos/lib/python3.6/site-packages
+# Clear any old pid files
+rm -f /run/httpd/httpd.pid
 if [ ! -z "$apacheUID" ] && [ ! -f /custom/initialized ]; then
 	usermod -u $apacheUID apache
 	if [ ! -z "$apacheGID" ]; then
 		groupmod -g $apacheGID apache
 	fi
-	find / -uid 48 |grep -v ^/proc |xargs chown apache:apache
+	find /run /var /config/db.sqlite3 /custom -uid 48 |xargs chown apache:apache
 fi
 
 for file in /var/log/ovis_web_svcs/settings.log /var/log/ovis_web_svcs/sosgui.log ; do
