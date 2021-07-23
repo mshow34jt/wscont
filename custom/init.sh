@@ -19,15 +19,19 @@ for file in /var/log/ovis_web_svcs/settings.log /var/log/ovis_web_svcs/sosgui.lo
 	fi
 done
 if [ ! -f /config/httpd-wsgi.conf ]; then
-	# init or reset
-	if [ -L /etc/httpd/conf.d/wsgi.conf ]; then
-		# reset
-		cp /custom/httpd-wsgi.conf /config
-	else
+        if [ -L /etc/httpd/conf.d/wsgi.conf ]; then
+                # reset
+                cp /custom/httpd-wsgi.conf /config
+        else
 		# init
-		cp /custom/httpd-wsgi.conf /config
-		ln -s /config/httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf
+                cp /custom/httpd-wsgi.conf /config
+                ln -s /config/httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf
 	fi
+else
+        if [ ! -L /etc/httpd/conf.d/wsgi.conf ]; then
+                # init
+                ln -s /config/httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf
+        fi
 fi
 
 if [ ! -f /config/settings.py ]; then
@@ -51,7 +55,7 @@ if [ ! -L /var/www/ovis_web_svcs/db.sqlite3 ]; then
 	cp /var/www/ovis_web_svcs/db.sqlite3 /custom/db.sqlite3.firstrun
 	mv /var/www/ovis_web_svcs/db.sqlite3 /config/db.sqlite3
 	ln -s /config/db.sqlite3 /var/www/ovis_web_svcs/db.sqlite3
-	chown apache:apache /config/db.sqlite3
+	chown apache:apache /config/db.sqlite3 /config/settings.py
 else
 	# reset
 	if [ ! -f /config/db.sqlite3 ]; then
