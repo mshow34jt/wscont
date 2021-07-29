@@ -84,19 +84,17 @@ ENV PYTHONPATH=/usr/local/sos/lib/python3.6/site-packages
 WORKDIR /var/www/ovis_web_svcs
 RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36.cpython-36m-x86_64-linux-gnu.so \
           /usr/lib64/httpd/modules/mod_wsgi.so && \
-    echo "LoadModule wsgi_module modules/mod_wsgi.so" > /etc/httpd/conf.modules.d/10-wsgi.conf && \ 
+    echo "LoadModule wsgi_module modules/mod_wsgi.so" > /etc/httpd/conf.modules.d/10-wsgi.conf && \
     # Create convenience config folder for mapping
     mkdir -p /var/log/ovis_web_svcs /data/sos /config && \
     # Create convenience log link for mapping
     ln -s /var/log/ovis_web_svcs /log && \
     rm -f /etc/httpd/logs && \
     ln -s /var/log/ovis_web_svcs /etc/httpd/logs && \
-    chown -R apache:apache /var/www/ovis_web_svcs /config && \
-##    chmod -R g+rw /var/www/ovis_web_svcs && \
+    chown -R apache:apache /var/www/ovis_web_svcs && \
+    chmod -R g+rw /var/www/ovis_web_svcs && \
     rm -f /etc/localtime && \
     chmod +x /custom/init.sh
 
 CMD ["/bin/bash", "-c", "/custom/init.sh"]
-##ENTRYPOINT ["/bin/bash", "/custom/init.sh"]
-##CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
 
