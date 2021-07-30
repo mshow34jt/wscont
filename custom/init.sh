@@ -4,6 +4,10 @@ export PATH=/usr/local/sos/bin:$PATH
 export PYTHONPATH=/usr/local/sos/lib/python3.6/site-packages
 # Clear any old pid files
 rm -f /run/httpd/httpd.pid
+if [ ! -f /custom/initialized ] && [ "$rootless" == 1 ]; then
+	gpasswd -a apache root
+fi
+
 if [ ! -z "$apacheUID" ] && [ ! -f /custom/initialized ]; then
 	usermod -u $apacheUID apache
 	if [ ! -z "$apacheGID" ]; then
