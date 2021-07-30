@@ -4,18 +4,21 @@ Currently includes sos, numsos, sosdb-ui, and sosdb-grafana, httpd (apache).
 
 ## Build container:
 
-docker build -t ogcws:v1 .
+	docker build -t ogcws:v1 .
 
 ## Run container:
 
-docker run -d \
-        -v ~jenos/webservices/config:/config \
-        -v ~jenos/webservices/data/sos:/data/sos \
-        -v ~jenos/webservices/log:/log \
+Example:
+
+	docker run -d \
+	-v ~jenos/webservices/config:/config \
+	-v ~jenos/webservices/data/sos:/data/sos \
+	-v ~jenos/webservices/log:/log \
 	-v /etc/localtime:/etc/localtime \
 	-p 8088:8080/tcp --name webservices ogcws:v1
 
 Optional to ensure container apache process can access mapped volumes:
+
 	-e apacheUID=`id -u` (system level docker service - see below)
 	-e apacheGID=`id -g` (system level docker service - see below)
 	---OR---
