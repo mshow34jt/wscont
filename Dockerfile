@@ -32,7 +32,7 @@ RUN git clone https://github.com/ovis-hpc/sos && \
     mkdir -p build && \
     cd build && \
     ../configure --prefix=/usr/local/sos --enable-python && \
-    make && \
+    make -j && \
     make install && \
     cd ../.. && \
     git clone https://github.com/nick-enoent/numsos && \
@@ -41,7 +41,7 @@ RUN git clone https://github.com/ovis-hpc/sos && \
     mkdir -p build && \
     cd build && \
     ../configure --prefix=/usr/local/sos --with-sos=/usr/local/sos && \
-    make && \
+    make -j && \
     make install
 
 WORKDIR /source
@@ -51,17 +51,17 @@ RUN git clone https://github.com/nick-enoent/sosdb-ui && \
     mkdir -p build && \
     cd build && \
     ../configure --prefix=/var/www/ovis_web_svcs && \
-    make && \
+    make -j && \
     make install
 
 WORKDIR /source
-RUN git clone https://github.com/nick-enoent/sosdb-grafana && \
-    cd sosdb-grafana && \
+RUN git clone https://github.com/mshow34jt/vitess-grafana && \
+    cd vitess-grafana && \
     ./autogen.sh && \
     mkdir -p build && \
     cd build && \
     ../configure --prefix=/var/www/ovis_web_svcs && \
-    make && \
+    make -j && \
     make install
 
 # Set up running image
@@ -69,8 +69,8 @@ FROM centos:7 AS runner
 
 RUN yum update -y && \
     yum install -y python3 \
-		httpd &&\
-    pip3 install cython django==2.1.0 django-cors-headers==2.1.0 pandas && \
+		httpd && \
+    pip3 install mysql-connector cython django==2.1.0 django-cors-headers==2.1.0 pandas && \
     yum clean all
 
 COPY --from=build /usr/local/sos /usr/local/sos
@@ -93,7 +93,6 @@ RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36
     rm -f /etc/httpd/logs && \
     ln -s /var/log/ovis_web_svcs /etc/httpd/logs && \
     cp /custom/settings.py /var/www/ovis_web_svcs/sosgui/settings.py && \
-    #ln -s /custom/settings.py /var/www/ovis_web_svcs/sosgui/settings.py && \
     touch /log/settings.log && \
     python3 manage.py migrate && \
     python3 manage.py migrate --run-syncdb && \
@@ -104,15 +103,12 @@ RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36
     ln -s /config/db.sqlite3 /var/www/ovis_web_svcs/db.sqlite3 && \
     ln -s /config/settings.py /var/www/ovis_web_svcs/sosgui/settings.py && \
     ln -s /config/httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf && \
-#    for file in passwd passwd- group ; do \
-#      mv /etc/$file /custom/ && \
-#      ln -s /config/etc/$file /etc/$file; \
-#    done && \
     grep -v ^Listen /etc/httpd/conf/httpd.conf > /custom/httpd.conf && \
+##    cp /etc/httpd/conf/httpd.conf  /custom/httpd.conf && \
     rm -f /etc/httpd/conf/httpd.conf && \
     ln -s /config/httpd.conf /etc/httpd/conf/httpd.conf && \
-#    chown -R apache:apache /var/www/ovis_web_svcs /config /run /etc/httpd/logs && \
-#    chmod -R g+rw /var/www/ovis_web_svcs && \
+    chown -R apache:apache /var/www/ovis_web_svcs /run /etc/httpd/logs /custom && \
+    chsh -s /bin/bash apache && \
     rm -f /etc/localtime && \
     chmod +x /custom/init.sh
 
