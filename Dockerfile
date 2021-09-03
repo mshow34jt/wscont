@@ -87,7 +87,7 @@ RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36
           /usr/lib64/httpd/modules/mod_wsgi.so && \
     echo "LoadModule wsgi_module modules/mod_wsgi.so" > /etc/httpd/conf.modules.d/10-wsgi.conf && \
     # Create convenience config folder for mapping
-    mkdir -p /data/sos /log /config && \
+    mkdir -p /log /config && \
     # Create convenience log link for mapping
     ln -s /log /var/log/ovis_web_svcs && \
     rm -f /etc/httpd/logs && \
