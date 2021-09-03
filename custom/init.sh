@@ -10,7 +10,7 @@ for file in httpd.conf httpd-wsgi.conf settings.py db.sqlite3 ; do
         cp /custom/$file /config/
 	fi
 done
-chown -R apache:apache /config/db.sqlite3
+chown -R apache:apache /config /log
 
 /usr/bin/su -c "/usr/sbin/httpd -D FOREGROUND" apache
 #/usr/sbin/httpd -D FOREGROUND
