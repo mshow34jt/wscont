@@ -89,9 +89,9 @@ httpd && \
 pip3 install mysql-connector cython django==2.1.0 django-cors-headers==2.1.0 pandas && \
 yum clean all
 
-LD_LIBRARY_PATH=/usr/local/lib
-PATH=/usr/local/sos/bin:$PATH
-PYTHONPATH=/usr/local/sos/lib/python3.6/site-packages
+export LD_LIBRARY_PATH=/usr/local/lib
+export PATH=/usr/local/sos/bin:$PATH
+export PYTHONPATH=/usr/local/sos/lib/python3.6/site-packages
 
 cd /var/www/ovis_web_svcs
 ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36.cpython-36m-x86_64-linux-gnu.so \
@@ -114,14 +114,19 @@ mv /var/www/ovis_web_svcs/db.sqlite3 /custom/db.sqlite3 && \
 ln -s /config/db.sqlite3 /var/www/ovis_web_svcs/db.sqlite3 && \
 ln -s /config/settings.py /var/www/ovis_web_svcs/sosgui/settings.py && \
 ln -s /config/httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf && \
-grep -v ^Listen /etc/httpd/conf/httpd.conf > /custom/httpd.conf && \
-##    cp /etc/httpd/conf/httpd.conf  /custom/httpd.conf && \
+cat /etc/httpd/conf/httpd.conf \
+|sed "s/^Listen 80/Listen 8080/g" \
+|sed "s/^User.*/User jenos/g" \
+|sed "s/^Group.*/Group users/g" \
+> /custom/httpd.conf && \
 rm -f /etc/httpd/conf/httpd.conf && \
 ln -s /config/httpd.conf /etc/httpd/conf/httpd.conf && \
-chown -R apache:apache /var/www/ovis_web_svcs /run /etc/httpd/logs /var/log/ovis_web_svcs /custom && \
+chown -R 1000:100 /var/www/ovis_web_svcs /run /etc/httpd/logs /var/log/ovis_web_svcs /custom && \
 chsh -s /bin/bash apache && \
 rm -f /etc/localtime && \
-chmod +x /custom/init.sh
+ /bin/mv -f /custom/init-sing.sh /custom/init.sh
+     /bin/mv -f /custom/httpd-wsgi-sing.conf /custom/httpd-wsgi.conf
+    chmod +x /custom/init.sh
 
 
 %environment
@@ -130,7 +135,7 @@ export PATH=/usr/local/sos/bin:$PATH
 export PYTHONPATH=/usr/local/sos/lib/python3.6/site-packages
 %runscript
 cd /var/www/ovis_web_svcs
-exec /bin/bash /bin/bash -c /custom/init.sh "$@"
+exec /bin/bash -c /custom/init.sh "$@"
 %startscript
 cd /var/www/ovis_web_svcs
-exec /bin/bash /bin/bash -c /custom/init.sh "$@"
+exec /bin/bash -c /custom/init.sh "$@"

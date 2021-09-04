@@ -16,7 +16,7 @@ perl -pi -e "s/^PYTHONPATH=/export PYTHONPATH=/g" $singdef
 perl -pi -e "s/^chown -R apache:apache/chown -R $uid:$gid/g" $singdef
 perl -pi -e "s/^chown -R apache:apache/chown -R $uid:$gid/g" $initsh
 perl -pi -e "s,^exec /bin/bash /bin/bash -c,exec /bin/bash -c,g" $singdef
-perl -pi -e "s,^/usr/bin/su -c "/usr/sbin/httpd -D FOREGROUND" apache,/usr/sbin/httpd -D FOREGROUND,g" $initsh
+perl -pi -e 's,^/usr/bin/su -c "/usr/sbin/httpd -D FOREGROUND" apache,/usr/sbin/httpd -D FOREGROUND,g' $initsh
 perl -pi -e "s/User apache/User $un/g" $singdef
 perl -pi -e "s/Group apache/Group $gn/g" $singdef
 perl -pi -e "s/#dock2sing_only//g" $singdef
