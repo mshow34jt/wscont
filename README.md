@@ -39,7 +39,7 @@ Steps to build image (sif file) and start instance (example):
 * Be sure to setup "fakeroot" requirements first if not there already.
 *    https://sylabs.io/guides/3.5/user-guide/cli/singularity_config_fakeroot.html
 *    e.g.:
-*    singularity config fakeroot --add $un
+*    singularity config fakeroot --add $USER
 *  mkdir -p ~/webservices/config ~/webservices/log
 *  cd <PATH>/wscont
 *  singularity build --fakeroot ~/webservices/ogcws.sif Singularity.def
