@@ -11,6 +11,7 @@ for file in httpd.conf httpd-wsgi.conf settings.py db.sqlite3 ; do
 	fi
 done
 chown -R apache:apache /config /log
+mkdir -p /run/httpd
 
 /usr/bin/su -c "/usr/sbin/httpd -D FOREGROUND" apache
 

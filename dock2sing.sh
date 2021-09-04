@@ -9,7 +9,7 @@ httpdwsgi=./custom/httpd-wsgi-sing.conf
 /bin/cp -f ./custom/init.sh $initsh
 /bin/cp -f ./custom/httpd-wsgi.conf $httpdwsgi
 if [ `pip3 list 2>/dev/null |grep -c spython` -eq 0 ] ; then
-	pip3 install spython
+	pip3 install --user spython
 fi
 spython recipe Dockerfile $singdef
 perl -pi -e "s/^LD_LIBRARY_PATH=/export LD_LIBRARY_PATH=/g" $singdef
@@ -27,14 +27,16 @@ mkdir -p /var/run/httpd || echo -e "Warning: /var/run/httpd not writeable. With 
 
 cat <<EOF
 
+Recommend to use a separate terminal or these instructions will scroll off screen.
 Steps to build image (sif file) and start instance (example):
   Be sure to setup "fakeroot" requirements first if not there already.
     https://sylabs.io/guides/3.5/user-guide/cli/singularity_config_fakeroot.html
+    e.g.:
     singularity config fakeroot --add $un
   mkdir -p ~/webservices/config ~/webservices/log
   cd <PATH>/wscont
   singularity build --fakeroot ~/webservices/ogcws.sif Singularity.def
   cd ~/webservices
-  singularity instance start --bind ./config:/config,./log:/log,/run  ./ogcws.sif ogcws
+  singularity instance start --bind ./config:/config,./log:/log,./log:/run  ./ogcws.sif ogcws
 EOF
 
