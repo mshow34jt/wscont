@@ -8,7 +8,9 @@ initsh=./custom/init-sing.sh
 httpdwsgi=./custom/httpd-wsgi-sing.conf
 /bin/cp -f ./custom/init.sh $initsh
 /bin/cp -f ./custom/httpd-wsgi.conf $httpdwsgi
-pip3 install spython
+if [ `pip3 list 2>/dev/null |grep -c spython` -eq 0 ] ; then
+	pip3 install spython
+fi
 spython recipe Dockerfile $singdef
 perl -pi -e "s/^LD_LIBRARY_PATH=/export LD_LIBRARY_PATH=/g" $singdef
 perl -pi -e "s/^PATH=/export PATH=/g" $singdef
@@ -30,9 +32,9 @@ Steps to build image (sif file) and start instance (example):
     https://sylabs.io/guides/3.5/user-guide/cli/singularity_config_fakeroot.html
     singularity config fakeroot --add $un
   mkdir -p ~/webservices/config ~/webservices/log
-  cd $OLDPWD
+  cd <PATH>/wscont
   singularity build --fakeroot ~/webservices/ogcws.sif Singularity.def
-  cd ~webservices
+  cd ~/webservices
   singularity instance start --bind ./config:/config,./log:/log,/run  ./ogcws.sif ogcws
 EOF
 
