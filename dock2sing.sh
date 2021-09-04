@@ -23,8 +23,6 @@ perl -pi -e "s/User apache/User $un/g" $singdef
 perl -pi -e "s/Group apache/Group $gn/g" $singdef
 perl -pi -e "s/#dock2sing_only//g" $singdef
 
-mkdir -p /var/run/httpd || echo -e "Warning: /var/run/httpd not writeable. With permissions, run:\nmkdir -p /var/run/httpd && chown $un:$gn /var/run/httpd\nbefore running instance."
-
 cat <<EOF
 
 Recommend to use a separate terminal or these instructions will scroll off screen.
@@ -37,6 +35,6 @@ Steps to build image (sif file) and start instance (example):
   cd <PATH>/wscont
   singularity build --fakeroot ~/webservices/ogcws.sif Singularity.def
   cd ~/webservices
-  singularity instance start --bind ./config:/config,./log:/log,./log:/run  ./ogcws.sif ogcws
+  singularity instance start --bind ./config:/config,./log:/log,./log:/run ./ogcws.sif ogcws
 EOF
 
