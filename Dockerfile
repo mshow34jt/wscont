@@ -103,13 +103,18 @@ RUN ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36
     ln -s /config/db.sqlite3 /var/www/ovis_web_svcs/db.sqlite3 && \
     ln -s /config/settings.py /var/www/ovis_web_svcs/sosgui/settings.py && \
     ln -s /config/httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf && \
-    grep -v ^Listen /etc/httpd/conf/httpd.conf > /custom/httpd.conf && \
-##    cp /etc/httpd/conf/httpd.conf  /custom/httpd.conf && \
+    cat /etc/httpd/conf/httpd.conf \
+	|sed "s/^Listen 80/Listen 8080/g" \
+	|sed "s/^User.*/User apache/g" \
+	|sed "s/^Group.*/Group apache/g" \
+	> /custom/httpd.conf && \
     rm -f /etc/httpd/conf/httpd.conf && \
     ln -s /config/httpd.conf /etc/httpd/conf/httpd.conf && \
     chown -R apache:apache /var/www/ovis_web_svcs /run /etc/httpd/logs /var/log/ovis_web_svcs /custom && \
     chsh -s /bin/bash apache && \
     rm -f /etc/localtime && \
+    #dock2sing_only /bin/mv -f /custom/init-sing.sh /custom/init.sh
+    #dock2sing_only /bin/mv -f /custom/httpd-wsgi-sing.conf /custom/httpd-wsgi.conf
     chmod +x /custom/init.sh
 
 CMD ["/bin/bash", "-c", "/custom/init.sh"]

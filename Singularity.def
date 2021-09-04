@@ -36,7 +36,7 @@ export PYTHON=`which python3` && \
 mkdir -p build && \
 cd build && \
 ../configure --prefix=/usr/local/sos --enable-python && \
-make && \
+make -j && \
 make install && \
 cd ../.. && \
 git clone https://github.com/nick-enoent/numsos && \
@@ -45,7 +45,7 @@ cd numsos && \
 mkdir -p build && \
 cd build && \
 ../configure --prefix=/usr/local/sos --with-sos=/usr/local/sos && \
-make && \
+make -j && \
 make install
 
 cd /source
@@ -55,17 +55,17 @@ cd sosdb-ui && \
 mkdir -p build && \
 cd build && \
 ../configure --prefix=/var/www/ovis_web_svcs && \
-make && \
+make -j && \
 make install
 
 cd /source
-git clone https://github.com/nick-enoent/sosdb-grafana && \
-cd sosdb-grafana && \
+git clone https://github.com/mshow34jt/vitess-grafana && \
+cd vitess-grafana && \
 ./autogen.sh && \
 mkdir -p build && \
 cd build && \
 ../configure --prefix=/var/www/ovis_web_svcs && \
-make && \
+make -j && \
 make install
 
 # Set up running image
@@ -85,26 +85,25 @@ custom /custom
 
 yum update -y && \
 yum install -y python3 \
-httpd &&\
-pip3 install cython django==2.1.0 django-cors-headers==2.1.0 pandas && \
+httpd && \
+pip3 install mysql-connector cython django==2.1.0 django-cors-headers==2.1.0 pandas && \
 yum clean all
 
-export LD_LIBRARY_PATH=/usr/local/lib
-export PATH=/usr/local/sos/bin:$PATH
-export PYTHONPATH=/usr/local/sos/lib/python3.6/site-packages
+LD_LIBRARY_PATH=/usr/local/lib
+PATH=/usr/local/sos/bin:$PATH
+PYTHONPATH=/usr/local/sos/lib/python3.6/site-packages
 
 cd /var/www/ovis_web_svcs
 ln -s /usr/local/lib64/python3.6/site-packages/mod_wsgi/server/mod_wsgi-py36.cpython-36m-x86_64-linux-gnu.so \
 /usr/lib64/httpd/modules/mod_wsgi.so && \
 echo "LoadModule wsgi_module modules/mod_wsgi.so" > /etc/httpd/conf.modules.d/10-wsgi.conf && \
 # Create convenience config folder for mapping
-mkdir -p /var/log/ovis_web_svcs /data/sos /config && \
+mkdir -p /log /config && \
 # Create convenience log link for mapping
-ln -s /var/log/ovis_web_svcs /log && \
+ln -s /log /var/log/ovis_web_svcs && \
 rm -f /etc/httpd/logs && \
-ln -s /var/log/ovis_web_svcs /etc/httpd/logs && \
+ln -s /log /etc/httpd/logs && \
 cp /custom/settings.py /var/www/ovis_web_svcs/sosgui/settings.py && \
-#ln -s /custom/settings.py /var/www/ovis_web_svcs/sosgui/settings.py && \
 touch /log/settings.log && \
 python3 manage.py migrate && \
 python3 manage.py migrate --run-syncdb && \
@@ -115,17 +114,14 @@ mv /var/www/ovis_web_svcs/db.sqlite3 /custom/db.sqlite3 && \
 ln -s /config/db.sqlite3 /var/www/ovis_web_svcs/db.sqlite3 && \
 ln -s /config/settings.py /var/www/ovis_web_svcs/sosgui/settings.py && \
 ln -s /config/httpd-wsgi.conf /etc/httpd/conf.d/wsgi.conf && \
-for file in passwd passwd- group ; do
-      mv $file /custom/
-      ln -s /custom/$file /config/etc/$file
-    done && \
-    grep -v ^Listen /etc/httpd/conf/httpd.conf > /custom/httpd.conf && \
-    rm -f /etc/httpd/conf/httpd.conf && \
-    ln -s /config/httpd.conf /etc/httpd/conf/httpd.conf && \
-#    chown -R apache:apache /var/www/ovis_web_svcs /config /run /etc/httpd/logs && \
-#    chmod -R g+rw /var/www/ovis_web_svcs && \
-    rm -f /etc/localtime && \
-    chmod +x /custom/init.sh
+grep -v ^Listen /etc/httpd/conf/httpd.conf > /custom/httpd.conf && \
+##    cp /etc/httpd/conf/httpd.conf  /custom/httpd.conf && \
+rm -f /etc/httpd/conf/httpd.conf && \
+ln -s /config/httpd.conf /etc/httpd/conf/httpd.conf && \
+chown -R apache:apache /var/www/ovis_web_svcs /run /etc/httpd/logs /var/log/ovis_web_svcs /custom && \
+chsh -s /bin/bash apache && \
+rm -f /etc/localtime && \
+chmod +x /custom/init.sh
 
 
 %environment
@@ -137,4 +133,4 @@ cd /var/www/ovis_web_svcs
 exec /bin/bash /bin/bash -c /custom/init.sh "$@"
 %startscript
 cd /var/www/ovis_web_svcs
-exec /bin/bash -c /custom/init.sh "$@"
+exec /bin/bash /bin/bash -c /custom/init.sh "$@"

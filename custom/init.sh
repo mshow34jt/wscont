@@ -13,5 +13,4 @@ done
 chown -R apache:apache /config /log
 
 /usr/bin/su -c "/usr/sbin/httpd -D FOREGROUND" apache
-#/usr/sbin/httpd -D FOREGROUND
 
