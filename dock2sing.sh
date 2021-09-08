@@ -11,7 +11,7 @@ httpdwsgi=./custom/httpd-wsgi-sing.conf
 if [ `pip3 list 2>/dev/null |grep -c spython` -eq 0 ] ; then
 	pip3 install --user spython
 fi
-spython recipe Dockerfile $singdef
+~/.local/bin/spython recipe Dockerfile $singdef
 perl -pi -e "s/^LD_LIBRARY_PATH=/export LD_LIBRARY_PATH=/g" $singdef
 perl -pi -e "s/^PATH=/export PATH=/g" $singdef
 perl -pi -e "s/^PYTHONPATH=/export PYTHONPATH=/g" $singdef

@@ -36,6 +36,7 @@ you plan to run the singularity container as.  Follow instructions from there,
 or from below:
 
 Steps to build image (sif file) and start instance (example):
+* In the wscont/ folder, as the container owner user, run ./dock2sing.sh (generates Singularity.def)
 * Be sure to setup "fakeroot" requirements first if not there already.
 *    https://sylabs.io/guides/3.5/user-guide/cli/singularity_config_fakeroot.html
 *    e.g.:
