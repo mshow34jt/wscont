@@ -8,7 +8,7 @@ initsh=./custom/init-sing.sh
 httpdwsgi=./custom/httpd-wsgi-sing.conf
 /bin/cp -f ./custom/init.sh $initsh
 /bin/cp -f ./custom/httpd-wsgi.conf $httpdwsgi
-if [ `pip3 list 2>/dev/null |grep -c spython` -eq 0 ] ; then
+if [ `pip3 list --user 2>/dev/null |grep -c spython` -eq 0 ] ; then
 	pip3 install --user spython
 fi
 ~/.local/bin/spython recipe Dockerfile $singdef
