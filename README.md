@@ -47,3 +47,6 @@ Steps to build image (sif file) and start instance (example):
 *  cd ~/webservices
 *  singularity instance start --bind ./config:/config,./log:/log,./log:/run ./ogcws.sif ogcws
 
+### Important consideration for "fakeroot" and rootless docker instances that do namespace re-mapping:
+	/etc/subuid and /etc/subgid files include the mapping, and the third field is the count for the range.
+	Since the user's UID/GID are used by chown in the build and setup phases, it is important that the respective range is larger than the UID/GID respectively. If there are multiple entries in the /etc/sub*id files, be sure the subsequent line's starting index is offset by the range you may be manually modifying.  Singularity's "fakeroot" tool normally takes care of this, but defaults to 65k ranges, which sometimes are not sufficient.
