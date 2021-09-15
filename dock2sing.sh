@@ -23,6 +23,11 @@ perl -pi -e "s/User apache/User $un/g" $singdef
 perl -pi -e "s/Group apache/Group $gn/g" $singdef
 perl -pi -e "s/#dock2sing_only//g" $singdef
 
+IDWARN=""
+if [ $uid -gt 65536 ] || [ $gid -gt 65536 ] ; then
+        IDWARN="Warning! UID or GID exceeds 65536. See README.md fakeroot considerations to fix /etc/sub*id files."
+fi
+
 cat <<EOF
 
 Recommend to use a separate terminal or these instructions will scroll off screen.
@@ -31,6 +36,7 @@ Steps to build image (sif file) and start instance (example):
     https://sylabs.io/guides/3.5/user-guide/cli/singularity_config_fakeroot.html
     e.g.:
     singularity config fakeroot --add $un
+  $IDWARN
   mkdir -p ~/webservices/config ~/webservices/log
   cd <PATH>/wscont
   singularity build --fakeroot ~/webservices/ogcws.sif Singularity.def
