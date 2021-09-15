@@ -1,12 +1,14 @@
 # Overview:
 Sets up web service container to communicate with Grafana front end and Vitess backend.
 Currently includes sos, numsos, sosdb-ui, and vitess-grafana, httpd (apache).
+Tested in rootful dockerd, rootless dockerd, and singularity fakeroot environments.
 
-## Build container:
+## Docker Instructions:
+### Build container:
 	In same folder as Dockerfile (or use -f <path>/Dockerfile)
 	docker build -t ogcws:v1 .
 
-## Run container:
+### Run container:
 
 Example:
 
@@ -18,12 +20,12 @@ Example:
 
 ## Notes to implement.
 
-### Build container _optional_ adjustments (can be changed after container started):
-* Port number defaults to 8080
+### Build container _optional_ adjustments in Dockerfile:
+* Port number defaults to 8080 (can be changed after container started):
 * User/pass from admin/pass
 
-### Run container recommended adjustments:
-* Mapped folder locations. Please map config, data, log, localtime similar to above.
+### Run container recommendations:
+* Mapped folder locations. Please map config, data, log, localtime similar to above for Docker.
 * Mapped port numbers for container httpd to host listening port. (point grafana to port 8080 in example above)
 
 ### After container started:
@@ -47,7 +49,7 @@ Steps to build image (sif file) and start instance (example):
 *  cd ~/webservices
 *  singularity instance start --bind ./config:/config,./log:/log,./log:/run ./ogcws.sif ogcws
 
-### Important consideration for "fakeroot" and rootless docker instances that do namespace re-mapping:
+## Important consideration for "fakeroot" and rootless docker instances that do namespace re-mapping:
 	
 	/etc/subuid and /etc/subgid files include the mapping, and the third field is the count for the range.
 	Since the user's UID/GID are used by chown in the build and setup phases, it is important that the respective
